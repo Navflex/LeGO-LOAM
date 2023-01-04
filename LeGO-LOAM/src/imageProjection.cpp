@@ -172,8 +172,12 @@ public:
         if (useCloudRing == true){
             pcl::fromROSMsg(*laserCloudMsg, *laserCloudInRing);
             if (laserCloudInRing->is_dense == false) {
-                ROS_ERROR("Point cloud is not in dense format, please remove NaN points first!");
-                ros::shutdown();
+                // remove Nan
+                vector<int> indices;
+                pcl::removeNaNFromPointCloud(*laserCloudIn, *laserCloudIn, indices);
+                laserCloudInRing->is_dense = true;
+                ROS_WARN_ONCE("Point cloud is not in dense format, please remove NaN points first!");
+                //ros::shutdown();
             }  
         }
     }
